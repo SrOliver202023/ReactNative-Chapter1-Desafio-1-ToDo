@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { Header } from '../components/Header';
@@ -10,15 +10,32 @@ export function Home() {
 
   function handleAddTask(newTaskTitle: string) {
     //TODO - add new task
+    const newTaks: Task = {
+      id: new Date().getTime(),
+      title: newTaskTitle,
+      done: false
+    };
+    setTasks(oldState => [...oldState, newTaks]);
   }
 
   function handleToggleTaskDone(id: number) {
     //TODO - toggle task done if exists
+    const taskFound = tasks.find(task => task.id === id);
+    Object.assign(taskFound, {
+      done: taskFound?.done === false ? true : false
+    });
+
+    setTasks(tasks.map(task => ({ ...task })));
   }
 
   function handleRemoveTask(id: number) {
     //TODO - remove task from state
+    setTasks(tasks.filter(task => task.id !== id));
   }
+
+  useEffect(() => {
+
+  }, [tasks]);
 
   return (
     <View style={styles.container}>
@@ -26,13 +43,13 @@ export function Home() {
 
       <TodoInput addTask={handleAddTask} />
 
-      <TasksList 
-        tasks={tasks} 
+      <TasksList
+        tasks={tasks}
         toggleTaskDone={handleToggleTaskDone}
-        removeTask={handleRemoveTask} 
+        removeTask={handleRemoveTask}
       />
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
@@ -40,4 +57,4 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#EBEBEB'
   }
-})
+});
